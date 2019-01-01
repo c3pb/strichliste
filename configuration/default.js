@@ -20,12 +20,12 @@ module.exports = {
 
     boundaries: {
         account: {
-            upper: 99999999,
-            lower: -50
+            upper: 200,
+            lower: -23
         },
         transaction: {
-            upper: 150,
-            lower: -20
+            upper:  50,
+            lower: -50
         }
     },
 
