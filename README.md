@@ -246,7 +246,8 @@ The following data structure describes the transaction:
 {
   value: <float>,
   comment: <string>,
-  toUserId: <int>
+  toUserId: <int>,
+  toUserComment: <string>
 }
 ````
 
