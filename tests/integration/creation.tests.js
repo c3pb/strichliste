@@ -150,6 +150,6 @@ describe('Integration creation', function () {
             .send('{"name": }')
             .expect('Content-Type', /application\/json/)
             .expect(400)
-            .expect('{"message":"Unexpected token }"}', done);
+            .expect('{"message":"Unexpected token } in JSON at position 9"}', done);
     });
 });
