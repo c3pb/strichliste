@@ -1,12 +1,5 @@
 language: node_js
 node_js:
-   - "0.10"
-   - "0.12"
-   - "iojs-v1"
-   - "iojs-v2"
-   - "iojs-v3"
-   - "4.0"
-   - "4.1"
-   - "5"
-   - "5.1"
-script: make travis
+   - "8.9"
+   - "9.3"
+script: npm run travis

@@ -4,6 +4,9 @@
 [![Dependency Status](https://david-dm.org/hackerspace-bootstrap/strichliste/master.svg)](https://david-dm.org/hackerspace-bootstrap/strichliste/master)
 [![devDependency Status](https://david-dm.org/hackerspace-bootstrap/strichliste/master/dev-status.svg)](https://david-dm.org/hackerspace-bootstrap/strichliste/master#info=devDependencies)
 
+# DEPRECATED
+strichliste1 has been replaced by strichliste2. See https://github.com/strichliste for the new version!
+
 This module is the API for the strichliste app. Arbitrary clients can be implemented using this [API](#api-documentation)
 
 __Clients__:
@@ -22,18 +25,18 @@ __Clients__:
 
 #### Steps
 
-##### Grap the latest [release](https://github.com/hackerspace-bootstrap/strichliste/releases)
+##### Grab the latest [release](https://github.com/hackerspace-bootstrap/strichliste/releases)
 
 ##### install dependencies
 
 ````bash
-$ make install-packages
+$ npm i
 ````
 
 ##### run tests
 
 ````bash
-$ make test
+$ npm run test
 ````
 
 ##### initialize database
@@ -41,21 +44,21 @@ $ make test
 creates the tables in the sqlitefile
 
 ````bash
-$ make database
+$ npm run setup:database
 ````
 
 #### everything at once
 
-For your convenience the following make target does all of the above steps at once:
+For your convenience the following npm script does all of the above steps at once:
 ````bash
-$ make setup
+$ npm run setup
 ````
 
 #### start api server
 
 Consider editing the configuration before starting the api server (see the [configuration](#configuration) section).
 ````bash
-$ make start
+$ npm run start
 ````
 
 ## Configuration
@@ -168,8 +171,12 @@ Each user is described via the following data structure:
 {
   "id": <int>,
   "name": <string>,
+  "mailAddress": <string>,
   "balance": <float>,
-  "lastTransaction": <dateTime>
+  "lastTransaction": <dateTime>,
+  "countOfTransactions": <int>,
+  "weightedCountOfPurchases": <int>,
+  "activeDays": <int>
 }
 ````
 
@@ -178,10 +185,13 @@ The parameters and the list structure of the `Pagination` section are used in th
 #### POST /user
 
 Creates a new user.
-To create a new user a name has to be assigned via the following data structure:
+To create a new user a name and an optional mailAddress has to be assigned via the following data structure.
 
 ````
-{ "name": <string> }
+{
+    "name": <string>,
+    "mailAddress": <string>
+}
 ````
 
 Returns the status code 201 and the created user if the creation was successfull.
@@ -199,7 +209,8 @@ Each transaction has the following data structure:
   id: <int>,
   userId: <int>,
   createDate: <DateTime>,
-  value: <float>
+  value: <float>,
+  comment: <string>
 }
 ````
 
@@ -232,7 +243,11 @@ Creates a new transaction for the user with the id `:userId`.
 The following data structure describes the transaction:
 
 ````
-{ value: <float> }
+{
+  value: <float>,
+  comment: <string>,
+  toUserId: <int>
+}
 ````
 
 Returns the status code 201 if a transaction was successfully created.

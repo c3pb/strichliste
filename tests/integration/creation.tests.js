@@ -3,22 +3,32 @@ var request = require('supertest');
 
 var database = require('../util/database');
 
+var dbFactory = require('../../lib/database/Factory');
 var appFactory = require('../../appFactory');
 var configuration = require('../../lib/configuration');
 
 describe('Integration creation', function () {
-    var app;
+    var app, db;
     before(function (done) {
-        database.createPlainDatabase(configuration.database, function (error) {
+        dbFactory.create(configuration.database, function(error, _db) {
             if (error) throw error;
 
-            appFactory.create(function (error, _app) {
+            db = _db;
+            database.createPlainDatabase(db, function (error) {
                 if (error) throw error;
 
-                app = _app;
-                done();
+                appFactory.create(function (error, _app) {
+                    if (error) throw error;
+
+                    app = _app;
+                    done();
+                });
             });
         });
+    });
+
+    after(function(done) {
+        database.clearTables(db, done);
     });
 
     it('should return the app settings', function (done) {
@@ -40,10 +50,10 @@ describe('Integration creation', function () {
     it('should create a user', function (done) {
         request(app)
             .post('/user')
-            .send({name: 'bert'})
+            .send({name: 'bert', mailAddress: 'bertMail'})
             .expect('Content-Type', /application\/json/)
             .expect(201)
-            .expect('{"id":1,"name":"bert","balance":0,"lastTransaction":null,"countOfTransactions":0,"weightedCountOfPurchases":null,"activeDays":0}', done);
+            .expect('{"id":1,"name":"bert","mailAddress":"bertMail","balance":0,"lastTransaction":null,"countOfTransactions":0,"weightedCountOfPurchases":null,"activeDays":0}', done);
     });
 
     it('create should fail without a name', function (done) {
@@ -149,7 +159,6 @@ describe('Integration creation', function () {
             .set('Content-Type', 'application/json')
             .send('{"name": }')
             .expect('Content-Type', /application\/json/)
-            .expect(400)
-            .expect('{"message":"Unexpected token } in JSON at position 9"}', done);
+            .expect(400, done);
     });
 });
